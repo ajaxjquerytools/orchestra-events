@@ -21,4 +21,6 @@ public interface EventService {
 	public void publishMessage(QPEvent event);
 	
 	public boolean isEnabled();
+
+	public String serviceName();
 }

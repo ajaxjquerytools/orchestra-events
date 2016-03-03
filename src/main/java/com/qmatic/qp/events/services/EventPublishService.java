@@ -19,35 +19,42 @@ import com.qmatic.qp.core.common.QPEvent;
 
 /**
  * EventService, publishes event messages to enabled services.
- * 
- * @author gavsmi
  *
+ * @author gavsmi
  */
 @Service
 public class EventPublishService {
 
-	private static final Logger log = LoggerFactory.getLogger(EventPublishService.class);
-	
-	@Autowired
-	@Qualifier("webhook")
-	private EventService webhookService;
-	
-	@Autowired
-	@Qualifier("ws")
-	private EventService websocketService;
-	
-	@Async
-	public void publishMessage(QPEvent event) throws Exception {
-		// Publish message to each enabled service
-		
-		if(webhookService.isEnabled()) {
-			log.debug("Webhook service enabled, publishing...");
-			webhookService.publishMessage(event);
-		}
-		
-		if(websocketService.isEnabled()) {
-			log.debug("Websocket service enabled, publishing...");
-			websocketService.publishMessage(event);
-		}
-	}
+    private static final Logger log = LoggerFactory.getLogger(EventPublishService.class);
+
+    @Autowired
+    @Qualifier("webhook")
+    private EventService webhookService;
+
+    @Autowired
+    @Qualifier("ws")
+    private EventService websocketService;
+
+    @Autowired
+    @Qualifier("androidGcm")
+    private EventService androidGcmService;
+
+    @Async
+    public void publishMessage(QPEvent event) throws Exception {
+        // Publish message to each enabled service
+        publishMessageToService(event, webhookService);
+        publishMessageToService(event, websocketService);
+        publishMessageToService(event, androidGcmService);
+    }
+
+    private void publishMessageToService(QPEvent event, EventService eventService) {
+        try {
+            if (webhookService.isEnabled()) {
+                log.info("{} enabled, publishing...", eventService.serviceName());
+                eventService.publishMessage(event);
+            }
+        } catch (Exception ex) {
+            log.error("Cant publish message to service {}", eventService.serviceName());
+        }
+    }
 }

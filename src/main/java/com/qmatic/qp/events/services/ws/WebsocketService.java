@@ -50,4 +50,9 @@ public class WebsocketService implements EventService {
 	public boolean isEnabled() {
 		return this.enabled;
 	}
+
+	@Override
+	public String serviceName() {
+		return "websocket service";
+	}
 }

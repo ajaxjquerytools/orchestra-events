@@ -35,17 +35,13 @@ dependencies {
 	compile "org.springframework:spring-websocket:${springVersion}"
 	
 	compile "javax.websocket:javax.websocket-api:1.0"
-	
 	compile "org.codehaus.jackson:jackson-mapper-asl:1.9.8"
-	
 	compile "org.apache.httpcomponents:httpasyncclient:4.0.1"
+	compile 'org.whispersystems:gcm-sender-async:0.1.4'
 	
 	providedCompile "javax.jms:javax.jms-api:2.0-b12"
-	
 	providedCompile "javax:javaee-web-api:6.0"
-	
 	providedCompile "org.slf4j:slf4j-api:1.6.6"
-	
 	compile files('lib/qp-common-api-2.4.0.192.jar')
 	
 	testCompile "junit:junit:4.10"
