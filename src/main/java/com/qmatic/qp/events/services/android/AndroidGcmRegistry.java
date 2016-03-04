@@ -28,22 +28,26 @@ public class AndroidGcmRegistry {
 
 	private static final Logger log = LoggerFactory.getLogger(AndroidGcmRegistry.class);
 			
-	private Map<String, String> userToGsmToken = new ConcurrentHashMap<String, String>();
+	private Map<String, String> ticketToToken = new ConcurrentHashMap<String, String>();
 	
-	public void register(String user, String token) {
-		if(!userToGsmToken.containsKey(user)) {
-			log.debug("Adding user {} with token {}", user, token);
-			userToGsmToken.put(user,token);
+	public void register(String ticketId, String token) {
+		if(!ticketToToken.containsKey(ticketId)) {
+			log.debug("Adding user {} with token {}", ticketId, token);
+			ticketToToken.put(ticketId, token);
 		} else {
-			log.debug("Received registration for already registered endpoint {}", user);
+			log.debug("Received registration for already registered endpoint {}", ticketId);
 		}
 	}
 
-	public boolean contains(String userId) {
-		return userToGsmToken.containsKey(userId);
+	public boolean contains(String ticketId) {
+		return ticketToToken.containsKey(ticketId);
 	}
 
 	public void unregister(String userId) {
-		userToGsmToken.remove(userId);
+		ticketToToken.remove(userId);
 	}
+
+    public String getToken(String ticketId) {
+        return ticketToToken.get(ticketId);
+    }
 }

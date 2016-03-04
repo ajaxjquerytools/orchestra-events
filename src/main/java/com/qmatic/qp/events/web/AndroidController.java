@@ -20,7 +20,7 @@ public class AndroidController {
     @RequestMapping(value = "user/register", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void register(@RequestBody AndroidRegister androidRegister) {
-        androidGcmRegistry.register(androidRegister.getUser(), androidRegister.getToken());
+        androidGcmRegistry.register(androidRegister.getTicketId(), androidRegister.getToken());
     }
 
     @RequestMapping(value = "isRegister/{userId}", method = RequestMethod.GET)

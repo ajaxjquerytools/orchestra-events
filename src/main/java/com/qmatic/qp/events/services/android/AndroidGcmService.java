@@ -7,6 +7,7 @@ import com.qmatic.qp.core.common.QPEvent;
 import com.qmatic.qp.events.services.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.whispersystems.gcm.server.Message;
@@ -22,26 +23,29 @@ import org.whispersystems.gcm.server.Sender;
 public class AndroidGcmService implements EventService {
 
     private static final Logger log = LoggerFactory.getLogger(AndroidGcmRegistry.class);
+    private static final String GCM_SERVER_KEY = "AIzaSyDo4twzffWsWxC2is5y1brCzQes4aBxWAs";
+    @Autowired
+    private AndroidGcmRegistry gcmRegistry;
 
     @Override
     public void publishMessage(QPEvent event) {
-        //publishing to all devices; todo: fix in future;
         boolean calledToWindow = false;
-        //TODO: Refactor this
-
-        log.info("====AndroidGcmService:event name={}",event.getEventName());
+        log.info("====AndroidGcmService:event name={}", event.getEventName());
         if (event.getEventName().equals("VISIT_CALL")) {
 
-            String apiKey = "AIzaSyDo4twzffWsWxC2is5y1brCzQes4aBxWAs";
-            String registeredDestination = "APA91bHGkL_KLP-h4EAeOZyRZ66Qu7zeQlXPv-Nnn5399Vm94781OcVMIfIJX-Bcjse0FTuQF7bVVMoH4-vIMcFPkSzMw1ySoL7hqqF-lN5uRwe-oP0K7j6-iX4_6omQmRiBSTmfs8zd";
-            Sender sender = new Sender(apiKey);
+            String ticketId = (String)event.getParameters().get("ticket");
+
+            if (!gcmRegistry.contains(ticketId)) {
+                return;
+            }
+
+            String registeredDestination = gcmRegistry.getToken(ticketId);
+            Sender sender = new Sender(GCM_SERVER_KEY);
 
             Object window = event.getParameters().get("servicePointName");
-            Object ticket = event.getParameters().get("ticket");
 
-            String messageToSend = String.format("Please go to '%s', your ticket is %s", window.toString(), ticket.toString());
 
-            //String messageTemplate = new String(java.nio.charset.Charset.forName("UTF-8").encode(messageToSend).array(),java.nio.charset.Charset.forName("ISO-8859-1"));
+            String messageToSend = String.format("Please go to '%s', your ticket is %s", window.toString(), ticketId);
 
             ListenableFuture<Result> future = sender.send(Message.newBuilder()
                     .withDestination(registeredDestination)
@@ -52,16 +56,13 @@ public class AndroidGcmService implements EventService {
                 public void onSuccess(Result result) {
                     if (result.isSuccess()) {
                         log.info("Sended successfully messageId {}", result.getMessageId());
-                        // Maybe do something with result.getMessageId()
                     } else {
                         log.error("Message not sended error {}", result.getError());
-                        // Maybe do something with result.getError(), or check result.isUnregistered, etc..
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    // Handle network failure or server 500
                     log.error("Message not sended: " + throwable.getMessage());
                 }
             });
