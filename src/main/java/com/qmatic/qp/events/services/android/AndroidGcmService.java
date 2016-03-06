@@ -14,6 +14,8 @@ import org.whispersystems.gcm.server.Message;
 import org.whispersystems.gcm.server.Result;
 import org.whispersystems.gcm.server.Sender;
 
+import java.io.UnsupportedEncodingException;
+
 
 /**
  * Created by orchestra on 29.02.2016.
@@ -26,6 +28,7 @@ public class AndroidGcmService implements EventService {
     private static final String GCM_SERVER_KEY = "AIzaSyDo4twzffWsWxC2is5y1brCzQes4aBxWAs";
     @Autowired
     private AndroidGcmRegistry gcmRegistry;
+    private String encodedMessage;
 
     @Override
     public void publishMessage(QPEvent event) {
@@ -33,23 +36,23 @@ public class AndroidGcmService implements EventService {
         log.info("====AndroidGcmService:event name={}", event.getEventName());
         if (event.getEventName().equals("VISIT_CALL")) {
 
-            String ticketId = (String)event.getParameters().get("ticket");
+            Long visitId = (Long) event.getParameters().get("visitId");
 
-            if (!gcmRegistry.contains(ticketId)) {
+            if (!gcmRegistry.contains(visitId.toString())) {
                 return;
             }
 
-            String registeredDestination = gcmRegistry.getToken(ticketId);
+            String registeredDestination = gcmRegistry.getToken(visitId.toString());
             Sender sender = new Sender(GCM_SERVER_KEY);
 
-            Object window = event.getParameters().get("servicePointName");
+            String ticketId = (String) event.getParameters().get("ticket");
+            String window = (String) event.getParameters().get("servicePointName");
 
-
-            String messageToSend = String.format("Please go to '%s', your ticket is %s", window.toString(), ticketId);
+            String encodedMessageToSend = getEncodedMessage(window, ticketId);
 
             ListenableFuture<Result> future = sender.send(Message.newBuilder()
                     .withDestination(registeredDestination)
-                    .withDataPart("message", messageToSend).build());
+                    .withDataPart("message", encodedMessageToSend).build());
 
             Futures.addCallback(future, new FutureCallback<Result>() {
                 @Override
@@ -77,5 +80,19 @@ public class AndroidGcmService implements EventService {
     @Override
     public String serviceName() {
         return "androidGcmService";
+    }
+
+    private String getEncodedMessage(String window, String ticketId) {
+        String messageToSend = String.format("Пожалуйста пройдите к '%s'. Ваш билет  №%s", window, ticketId);
+
+        String encodedMessageToSend;
+        try {
+            encodedMessageToSend = java.net.URLEncoder.encode(messageToSend, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage());
+            encodedMessageToSend = messageToSend;
+        }
+
+        return encodedMessageToSend;
     }
 }

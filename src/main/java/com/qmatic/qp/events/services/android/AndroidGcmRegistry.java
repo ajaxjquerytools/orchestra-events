@@ -30,12 +30,12 @@ public class AndroidGcmRegistry {
 			
 	private Map<String, String> ticketToToken = new ConcurrentHashMap<String, String>();
 	
-	public void register(String ticketId, String token) {
-		if(!ticketToToken.containsKey(ticketId)) {
-			log.debug("Adding user {} with token {}", ticketId, token);
-			ticketToToken.put(ticketId, token);
+	public void register(String visitId, String token) {
+		if(!ticketToToken.containsKey(visitId)) {
+			log.debug("Adding user {} with token {}", visitId, token);
+			ticketToToken.put(visitId, token);
 		} else {
-			log.debug("Received registration for already registered endpoint {}", ticketId);
+			log.debug("Received registration for already registered endpoint {}", visitId);
 		}
 	}
 
