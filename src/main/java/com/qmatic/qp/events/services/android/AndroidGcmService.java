@@ -83,7 +83,8 @@ public class AndroidGcmService implements EventService {
     }
 
     private String getEncodedMessage(String window, String ticketId) {
-        String messageToSend = String.format("Пожалуйста пройдите к '%s'. Ваш билет  №%s", window, ticketId);
+        String MSG_TEMPLATE = new String("Пожалуйста пройдите к '%s'. Ваш билет  №%s".getBytes(), java.nio.charset.Charset.forName("UTF-8"));
+        String messageToSend = String.format(MSG_TEMPLATE, window, ticketId);
 
         String encodedMessageToSend;
         try {
