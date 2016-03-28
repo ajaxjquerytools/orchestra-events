@@ -42,7 +42,7 @@ dependencies {
 	providedCompile "javax.jms:javax.jms-api:2.0-b12"
 	providedCompile "javax:javaee-web-api:6.0"
 	providedCompile "org.slf4j:slf4j-api:1.6.6"
-	compile files('lib/qp-common-api-2.4.0.192.jar')
+	compile files('lib/qp-common-api-3.0.0.488.jar')
 	
 	testCompile "junit:junit:4.10"
 }

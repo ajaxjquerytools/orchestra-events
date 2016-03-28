@@ -23,10 +23,10 @@ public class AndroidController {
         androidGcmRegistry.register(androidRegister.getTicketId(), androidRegister.getToken());
     }
 
-    @RequestMapping(value = "isRegister/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "isRegister/{deviceUUID}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity isRegister(@PathVariable String userId) {
-        boolean contains = androidGcmRegistry.contains(userId);
+    public ResponseEntity isRegister(@PathVariable String deviceUUID) {
+        boolean contains = androidGcmRegistry.contains(deviceUUID);
         return contains ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
