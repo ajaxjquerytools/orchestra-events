@@ -23,11 +23,10 @@ public class AndroidController {
         androidGcmRegistry.register(androidRegister.getTicketId(), androidRegister.getToken());
     }
 
-    @RequestMapping(value = "isRegister/{deviceUUID}", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity isRegister(@PathVariable String deviceUUID) {
-        boolean contains = androidGcmRegistry.contains(deviceUUID);
-        return contains ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
+    @RequestMapping(value = "token/{deviceUUID}", method = RequestMethod.GET)
+    public ResponseEntity getToken(@PathVariable String deviceUUID) {
+        String token = androidGcmRegistry.getToken(deviceUUID);
+        return token == null ? new ResponseEntity(token, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "users/unregister/{userId}", method = RequestMethod.GET)
