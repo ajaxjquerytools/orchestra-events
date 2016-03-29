@@ -38,7 +38,6 @@ public class AndroidGcmService implements EventService {
 
     @Override
     public void publishMessage(QPEvent event) {
-        boolean calledToWindow = false;
         log.info("====AndroidGcmService:event name={}", event.getEventName());
         if (event.getEventName().equals("VISIT_CALL")) {
 

@@ -35,7 +35,7 @@ public class VisitService {
         //TODO check status
         if(visit == null){
             //NO Visit for this device; or visit expired or else...
-            cleanVisitForDevice(deviceUUID, visitId);
+            cleanState(deviceUUID, visitId);
             return null;
         }
         // visit still waiting for future serving
@@ -46,7 +46,7 @@ public class VisitService {
         return visitToDevice.get(visitId);
     }
 
-    private void cleanVisitForDevice(String deviceUUID, String visitId){
+    private void cleanState(String deviceUUID, String visitId){
         deviceToVisitId.remove(deviceUUID);
         visitToDevice.remove(visitId);
     }
