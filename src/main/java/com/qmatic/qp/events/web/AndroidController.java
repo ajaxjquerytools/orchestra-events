@@ -20,13 +20,13 @@ public class AndroidController {
     @RequestMapping(value = "user/register", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void register(@RequestBody AndroidRegister androidRegister) {
-        androidGcmRegistry.register(androidRegister.getTicketId(), androidRegister.getToken());
+        androidGcmRegistry.register(androidRegister.getDeviceUUID(), androidRegister.getToken());
     }
 
     @RequestMapping(value = "token/{deviceUUID}", method = RequestMethod.GET)
     public ResponseEntity getToken(@PathVariable String deviceUUID) {
         String token = androidGcmRegistry.getToken(deviceUUID);
-        return token == null ? new ResponseEntity(token, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
+        return token != null ? new ResponseEntity(token, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "users/unregister/{userId}", method = RequestMethod.GET)

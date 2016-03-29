@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class AndroidRegister implements Serializable{
     private static final long serialVersionUID = -1l;
 
-    private String ticketId;
+    private String deviceUUID;
     private String type;
     private String token;
 
@@ -16,12 +16,12 @@ public class AndroidRegister implements Serializable{
 
     }
 
-    public String getTicketId() {
-        return ticketId;
+    public String getDeviceUUID() {
+        return deviceUUID;
     }
 
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
+    public void setDeviceUUID(String deviceUUID) {
+        this.deviceUUID = deviceUUID;
     }
 
     public String getType() {
