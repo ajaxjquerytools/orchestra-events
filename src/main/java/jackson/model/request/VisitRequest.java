@@ -10,6 +10,7 @@ public class VisitRequest implements Serializable{
     private static final long serialVersionUID = -1l;
 
     private String visitId;
+    private String branchId;
 
     public VisitRequest() {
     }
@@ -20,5 +21,13 @@ public class VisitRequest implements Serializable{
 
     public void setVisitId(String visitId) {
         this.visitId = visitId;
+    }
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
     }
 }

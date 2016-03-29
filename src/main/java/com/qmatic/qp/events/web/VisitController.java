@@ -32,12 +32,14 @@ public class VisitController {
         if (visitRequest == null || StringUtils.isEmpty(visitRequest.getVisitId())) {
             throw new IllegalArgumentException("VisitId cant be null");
         }
-        visitService.add(deviceUUID, visitRequest.getVisitId());
+        visitService.add(deviceUUID, visitRequest.getBranchId(), visitRequest.getVisitId());
     }
 
-    @RequestMapping(value = "branch/{branchId}/device/{deviceUUID}", method = RequestMethod.GET)
-    public ResponseEntity getCurrentVisit(@PathVariable String branchId, @PathVariable String deviceUUID) {
-        Visit visit = visitService.getVisit(branchId, deviceUUID);
+    @RequestMapping(value = "device/{deviceUUID}", method = RequestMethod.GET)
+    public ResponseEntity getCurrentVisit( @PathVariable String deviceUUID) {
+        //TODO: store branchID after ticket was issued
+        String branchId = "2";
+        Visit visit = visitService.getVisit(deviceUUID);
         return visit != null ? new ResponseEntity(visit, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
