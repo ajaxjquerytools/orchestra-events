@@ -19,26 +19,36 @@ public class VisitService {
     private QmaticRestClientService qmaticRestClient;
 
     private Map<String, String> deviceToVisitId = new ConcurrentHashMap<String, String>();
+    private Map<String, String> visitToDevice = new ConcurrentHashMap<String, String>();
 
     public void add(String deviceUUID, String visitId) {
         deviceToVisitId.put(deviceUUID, visitId);
+        visitToDevice.put(visitId, deviceUUID);
     }
 
     public Visit getVisit(String branchId, String deviceUUID){
         String visitId = deviceToVisitId.get(deviceUUID);
         if(visitId == null){
-            //NO Visit for this device;
             return null;
         }
         Visit visit = qmaticRestClient.getVisit(branchId, visitId);
         //TODO check status
         if(visit == null){
             //NO Visit for this device; or visit expired or else...
-            deviceToVisitId.remove(deviceUUID);
+            cleanVisitForDevice(deviceUUID, visitId);
             return null;
         }
         // visit still waiting for future serving
         return visit;
+    }
+
+    public String getDeviceUUID(String visitId){
+        return visitToDevice.get(visitId);
+    }
+
+    private void cleanVisitForDevice(String deviceUUID, String visitId){
+        deviceToVisitId.remove(deviceUUID);
+        visitToDevice.remove(visitId);
     }
 
 }

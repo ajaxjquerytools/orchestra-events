@@ -3,8 +3,10 @@ package com.qmatic.qp.events.services.android;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.qmatic.qp.api.connectors.dto.Visit;
 import com.qmatic.qp.core.common.QPEvent;
 import com.qmatic.qp.events.services.EventService;
+import com.qmatic.qp.events.services.visit.VisitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,10 @@ public class AndroidGcmService implements EventService {
     private static final String GCM_SERVER_KEY = "AIzaSyDo4twzffWsWxC2is5y1brCzQes4aBxWAs";
     @Autowired
     private AndroidGcmRegistry gcmRegistry;
+
+    @Autowired
+    private VisitService visitService;
+
     private String encodedMessage;
 
     @Override
@@ -37,12 +43,13 @@ public class AndroidGcmService implements EventService {
         if (event.getEventName().equals("VISIT_CALL")) {
 
             Long visitId = (Long) event.getParameters().get("visitId");
+            String deviceUUID = visitService.getDeviceUUID(visitId.toString());
 
-            if (!gcmRegistry.contains(visitId.toString())) {
+            if (!gcmRegistry.contains(deviceUUID)) {
                 return;
             }
 
-            String registeredDestination = gcmRegistry.getToken(visitId.toString());
+            String registeredDestination = gcmRegistry.getToken(deviceUUID);
             Sender sender = new Sender(GCM_SERVER_KEY);
 
             String ticketId = (String) event.getParameters().get("ticket");
