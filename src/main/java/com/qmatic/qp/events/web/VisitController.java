@@ -36,10 +36,9 @@ public class VisitController {
     }
 
     @RequestMapping(value = "branch/{branchId}/device/{deviceUUID}", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
-    public ResponseEntity<Visit> getCurrentVisit(@PathVariable String branchId, @PathVariable String deviceUUID) {
+    public ResponseEntity getCurrentVisit(@PathVariable String branchId, @PathVariable String deviceUUID) {
         Visit visit = visitService.getVisit(branchId, deviceUUID);
-        return visit == null ? new ResponseEntity(visit, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
+        return visit != null ? new ResponseEntity(visit, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
 }

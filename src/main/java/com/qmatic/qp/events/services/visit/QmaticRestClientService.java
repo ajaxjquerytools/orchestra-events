@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Created by orchestra on 28.03.2016.
  */
@@ -32,10 +34,10 @@ public class QmaticRestClientService {
     @Value("${qmatic.core.servicepoint}")
     private String SERVICE_POINT_PATH;
 
-
     private RestTemplate restTemplate;
 
-    public QmaticRestClientService() {
+    @PostConstruct
+    public void initRestTemplate(){
         restTemplate = QpCentralRestTemplateFactory.createRestTemplate(user, password, host, port);
     }
 
