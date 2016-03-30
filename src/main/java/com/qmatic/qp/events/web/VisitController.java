@@ -1,8 +1,8 @@
 package com.qmatic.qp.events.web;
 
-import com.qmatic.qp.api.connectors.dto.Visit;
 import com.qmatic.qp.events.services.android.AndroidGcmRegistry;
 import com.qmatic.qp.events.services.visit.VisitService;
+import jackson.model.request.Ticket;
 import jackson.model.request.VisitRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,15 +32,13 @@ public class VisitController {
         if (visitRequest == null || StringUtils.isEmpty(visitRequest.getVisitId())) {
             throw new IllegalArgumentException("VisitId cant be null");
         }
-        visitService.add(deviceUUID, visitRequest.getBranchId(), visitRequest.getVisitId());
+        visitService.add(deviceUUID, visitRequest);
     }
 
     @RequestMapping(value = "device/{deviceUUID}", method = RequestMethod.GET)
     public ResponseEntity getCurrentVisit( @PathVariable String deviceUUID) {
-        //TODO: store branchID after ticket was issued
-        String branchId = "2";
-        Visit visit = visitService.getVisit(deviceUUID);
-        return visit != null ? new ResponseEntity(visit, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
+        Ticket ticket = visitService.getTicket(deviceUUID);
+        return ticket != null ? new ResponseEntity(ticket, HttpStatus.OK) : new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
 }

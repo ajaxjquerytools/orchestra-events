@@ -56,6 +56,6 @@ public class QmaticRestClientService {
     }
 
     public String getServicePointPath() {
-        return httpPrefix + "://" + host + ":" + port;
+        return httpPrefix + "://" + host + ":" + port + SERVICE_POINT_PATH;
     }
 }
