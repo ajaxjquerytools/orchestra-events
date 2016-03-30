@@ -64,7 +64,7 @@ public class VisitService {
             ticket.setVisitId(visitRequest.getVisitId());
 
             ticket.setServiceName(visitRequest.getServiceName());
-            ticket.setBranchName(visitRequest.getServiceName());
+            ticket.setBranchName(visitRequest.getBranchName());
 
             ticket.setBranchAddressLine1(visitRequest.getBranchAddressLine1());
             ticket.setBranchAddressLine2(visitRequest.getBranchAddressLine2());
