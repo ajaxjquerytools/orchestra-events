@@ -21,7 +21,9 @@ public class ApplicationConfig {
 
 	@Bean
 	static PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
+		PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+		propertySourcesPlaceholderConfigurer.setFileEncoding("UTF-8");
+		return propertySourcesPlaceholderConfigurer;
 	}
 	
 }

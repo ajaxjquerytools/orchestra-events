@@ -7,16 +7,20 @@ import com.qmatic.qp.api.connectors.dto.Visit;
 import com.qmatic.qp.core.common.QPEvent;
 import com.qmatic.qp.events.services.EventService;
 import com.qmatic.qp.events.services.visit.VisitService;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.whispersystems.gcm.server.GsmSender;
 import org.whispersystems.gcm.server.Message;
 import org.whispersystems.gcm.server.Result;
 import org.whispersystems.gcm.server.Sender;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 
 /**
@@ -27,7 +31,15 @@ import java.io.UnsupportedEncodingException;
 public class AndroidGcmService implements EventService {
 
     private static final Logger log = LoggerFactory.getLogger(AndroidGcmRegistry.class);
-    private static final String GCM_SERVER_KEY = "AIzaSyDo4twzffWsWxC2is5y1brCzQes4aBxWAs";
+
+
+    @Value("${qmatic.android.serverKey}")
+    private String gcmServerKey;
+
+    @Value("${qmatic.push.message}")
+    private String pushMessageTemplate;
+
+
     @Autowired
     private AndroidGcmRegistry gcmRegistry;
 
@@ -49,7 +61,7 @@ public class AndroidGcmService implements EventService {
             }
 
             String registeredDestination = gcmRegistry.getToken(deviceUUID);
-            Sender sender = new Sender(GCM_SERVER_KEY);
+            GsmSender sender = new GsmSender(gcmServerKey);
 
             String ticketId = (String) event.getParameters().get("ticket");
             String window = (String) event.getParameters().get("servicePointName");
@@ -88,18 +100,15 @@ public class AndroidGcmService implements EventService {
         return "androidGcmService";
     }
 
-    private String getEncodedMessage(String window, String ticketId) {
-        String MSG_TEMPLATE = "Пожалуйста пройдите к '%s'. Ваш билет  №%s";
-        String messageToSend = String.format(MSG_TEMPLATE, window, ticketId);
-
-        String encodedMessageToSend;
+    public String getEncodedMessage(String window, String ticketId) {
+        String encodedMessageToSend = "Please go to window";
         try {
+            String msgTpl = StringEscapeUtils.unescapeJava(pushMessageTemplate);
+            String messageToSend = String.format(msgTpl, window, ticketId);
             encodedMessageToSend = java.net.URLEncoder.encode(messageToSend, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
-            encodedMessageToSend = messageToSend;
         }
-
         return encodedMessageToSend;
     }
 }
