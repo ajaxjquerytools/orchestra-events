@@ -112,4 +112,21 @@ public class VisitRequest implements Serializable {
     public void setBranchAddressLine4(String branchAddressLine4) {
         this.branchAddressLine4 = branchAddressLine4;
     }
+
+    @Override
+    public String toString() {
+        return "VisitRequest{" +
+                "visitId='" + visitId + '\'' +
+                ", branchId=" + branchId +
+                ", queueId=" + queueId +
+                ", serviceId=" + serviceId +
+                ", clientId='" + clientId + '\'' +
+                ", serviceName='" + serviceName + '\'' +
+                ", branchName='" + branchName + '\'' +
+                ", branchAddressLine1='" + branchAddressLine1 + '\'' +
+                ", branchAddressLine2='" + branchAddressLine2 + '\'' +
+                ", branchAddressLine3='" + branchAddressLine3 + '\'' +
+                ", branchAddressLine4='" + branchAddressLine4 + '\'' +
+                '}';
+    }
 }

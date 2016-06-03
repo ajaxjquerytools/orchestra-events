@@ -2,6 +2,9 @@ package com.qmatic.qp.events.services.visit;
 
 import com.qmatic.qp.api.connectors.dto.Visit;
 import com.qmatic.qp.rest.QpCentralRestTemplateFactory;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,8 @@ import javax.annotation.PostConstruct;
 @Component
 @Scope("singleton")
 public class QmaticRestClientService {
+    private static final Logger log = LoggerFactory.getLogger(QmaticRestClientService.class);
+
     @Value("${qmatic.core.http.prefix}")
     private String httpPrefix;
 
@@ -37,7 +42,7 @@ public class QmaticRestClientService {
     private RestTemplate restTemplate;
 
     @PostConstruct
-    public void initRestTemplate(){
+    public void initRestTemplate() {
         restTemplate = QpCentralRestTemplateFactory.createRestTemplate(user, password, host, port);
     }
 
@@ -45,12 +50,14 @@ public class QmaticRestClientService {
         final String GET_VISIT_RESOURCE = "/branches/{branchId}/visits/{visitId}";
         final String GET_VISIT_FULL_PATH = getServicePointPath() + GET_VISIT_RESOURCE;
         try {
-            ResponseEntity<Visit> responseEntity =  restTemplate.getForEntity(GET_VISIT_FULL_PATH, Visit.class, branchId, visitId);
+            log.info("Getting visit info from " + GET_VISIT_FULL_PATH + "with branchId=" + branchId + "and visitId=" + visitId);
+            ResponseEntity<Visit> responseEntity = restTemplate.getForEntity(GET_VISIT_FULL_PATH, Visit.class, branchId, visitId);
             //TODO check response correct
             return responseEntity.getBody();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             //todo: che
             //TODO: handle exception correct;
+            log.error(ExceptionUtils.getStackTrace(ex));
             return null;
         }
     }
